@@ -17,8 +17,9 @@ public class Grid : MonoBehaviour
     private int startMazeX, startMazeZ, endMazeX, endMazeZ;
     private int startPathX, startPathZ, endPathX, endPathZ;
     private List<Cell> path;
-    public Cell[,] grid;
+    public static Cell[,] grid;
     public bool mazeSolvable = false;
+    public static int proCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,14 +28,14 @@ public class Grid : MonoBehaviour
         System.Random rand = new System.Random();
         
         // Set path material
-        int proCount = 0;
+        proCount = 0;
         int cellCount = 0;
         foreach(Cell cell in path)
         {
             cellCount += 1;
             cell.setMaterial(pathTexture);
             // cell.BecomeBeeg();
-            cell.SpawnWall(mazeWall, gridSpaceOffset);
+            // cell.SpawnWall(mazeWall, gridSpaceOffset);
 
 
             // Randomly spawn projectiles
@@ -76,20 +77,34 @@ public class Grid : MonoBehaviour
     {
         
         mazeSolvable = false;
-        DFS(grid[startMazeX, startMazeZ]);
+        if(grid[startMazeX, startMazeZ] != null)
+        {
+            DFS(grid[startMazeX, startMazeZ]);
+        }
+        else
+        {
+            print("Game over");
+            
+        }
+        
         
         // Clear the visited status of all maze cells
         for(int x = 0; x < 5; x++)
         {
             for(int z = 6; z < 11; z++)
             {
-                grid[x, z].visited = false;
+                if(grid[x, z] != null)
+                {
+                    grid[x, z].visited = false;
+                }
+                
             }
         }
 
         if(!mazeSolvable)
         {
-            Debug.Log("Game over");
+            print("Game over");
+            Character.gameOver = true;
         }
         
     }
